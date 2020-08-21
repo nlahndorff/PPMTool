@@ -2,12 +2,20 @@ package org.plaidcat.PPMTool.domain;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import javax.validation.constraints.Pattern;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 
 @Entity
 public class Project {
@@ -16,13 +24,29 @@ public class Project {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@NotBlank(message = "Project Name is Required")
 	private String projectName;
+	
+	@NotBlank(message= "Project Identifier is Required")
+	@Size(min=4,max=5, message = "Please use 4-5 characters for Project Identifier")
+	@Column(updatable = false, unique=true)
 	private String projectIdentifier;
+	
+	@NotBlank(message = "Project description is Required")
+	@Pattern(regexp = "^[a-zA-Z0-9 ]+$")
+	@Size(min=1,max=100)
 	private String description;
+	
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date start_date;
+	
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date end_date;
 	
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date created_at;
+	
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date updated_at;
 
 	public Project() {
