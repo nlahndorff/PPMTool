@@ -2,19 +2,28 @@ package org.plaidcat.PPMTool.domain;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import javax.validation.groups.Default;
+
+import org.plaidcat.PPMTool.SecondaryValidation;
+import org.plaidcat.PPMTool.TertiaryValidation;
+
 import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
@@ -27,14 +36,14 @@ public class Project {
 	@NotBlank(message = "Project Name is Required")
 	private String projectName;
 	
-	@NotBlank(message= "Project Identifier is Required")
-	@Size(min=4,max=5, message = "Please use 4-5 characters for Project Identifier")
+	@NotBlank(message= "A unique project identifier of 4-5 characters is required", groups = Default.class)
+	@Size(min=4,max=5, message = "A unique project identifier of 4-5 characters is required", groups = SecondaryValidation.class)
 	@Column(updatable = false, unique=true)
 	private String projectIdentifier;
 	
-	@NotBlank(message = "Project description is Required")
-	@Pattern(regexp = "^[a-zA-Z0-9 ]+$")
-	@Size(min=1,max=100)
+	@NotBlank(message = "Project description is Required", groups = Default.class)
+	@Pattern(regexp = "^[a-zA-Z0-9 ]+$", message = "Project description should be alphanumeric", groups = SecondaryValidation.class)
+	@Size(min=1,max=100, message = "Enter a description between 1 and 100 characters", groups = TertiaryValidation.class)
 	private String description;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
@@ -44,10 +53,15 @@ public class Project {
 	private Date end_date;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
+	@Column(updatable = false)
 	private Date created_at;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date updated_at;
+	
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "project")
+	@JsonIgnore
+	private Backlog backlog;
 
 	public Project() {
 		
@@ -125,5 +139,13 @@ public class Project {
 
 	public void setUpdated_at(Date updated_at) {
 		this.updated_at = updated_at;
+	}
+
+	public Backlog getBacklog() {
+		return backlog;
+	}
+
+	public void setBacklog(Backlog backlog) {
+		this.backlog = backlog;
 	}
 }

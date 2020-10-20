@@ -4,11 +4,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class ProjectIdException extends RuntimeException {
+public class ProjectNotFoundException extends RuntimeException {
 
-	private static final long serialVersionUID = 291784809913275387L;
+	private static final long serialVersionUID = -8468400008285244473L;
 
-	public ProjectIdException(String projectId) {
+	public ProjectNotFoundException(String projectId) {
 		super("Project id '" + projectId + "' does not exist.");
 	}
 }

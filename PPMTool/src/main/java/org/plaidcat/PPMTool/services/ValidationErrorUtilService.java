@@ -12,7 +12,7 @@ import org.springframework.validation.FieldError;
 @Service
 public class ValidationErrorUtilService {
 
-	public ResponseEntity<?> ValidationError(BindingResult result) {
+	public ResponseEntity<?> validationError(BindingResult result) {
         if(result.hasErrors()) {
         	Map<String,String> errors = new HashMap<String,String>();
         	
