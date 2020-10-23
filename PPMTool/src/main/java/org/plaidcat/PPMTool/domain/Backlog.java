@@ -22,7 +22,7 @@ public class Backlog {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	private Integer PTSequence = 0;
+	private Integer ptSequence = 0;
 	private String projectIdentifier;
 	
 	//OneToOne with a project
@@ -32,11 +32,11 @@ public class Backlog {
 	private Project project;
 	
 	//OneToMany with projectTask
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "backlog")
-	private List<ProjectTask> projectTasks = new ArrayList<ProjectTask>();
+	@OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "backlog", orphanRemoval=true)
+	private List<ProjectTask> projectTasks = new ArrayList<>();
 
 	public Backlog() {
-		
+		//Empty constructor
 	}
 
 	public Long getId() {
@@ -48,11 +48,11 @@ public class Backlog {
 	}
 
 	public Integer getPTSequence() {
-		return PTSequence;
+		return ptSequence;
 	}
 
 	public void setPTSequence(Integer pTSequence) {
-		PTSequence = pTSequence;
+		ptSequence = pTSequence;
 	}
 
 	public String getProjectIdentifier() {

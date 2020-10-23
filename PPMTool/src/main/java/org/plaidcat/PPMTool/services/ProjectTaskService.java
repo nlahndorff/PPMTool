@@ -60,10 +60,10 @@ public class ProjectTaskService {
 		return pt;
 	}
 	
-	public ProjectTask findPtByProjectSequence(String backlog_id, String sequence) {	
-		Backlog backlog = backlogRepository.findByProjectIdentifier(backlog_id);
+	public ProjectTask findPtByProjectSequence(String backlogId, String sequence) {	
+		Backlog backlog = backlogRepository.findByProjectIdentifier(backlogId);
 		if (backlog == null) { 
-			throw new ProjectNotFoundException(backlog_id);
+			throw new ProjectNotFoundException(backlogId);
 		}
 		
 		ProjectTask task =  projectTaskRepository.findByProjectSequence(sequence);
@@ -80,15 +80,17 @@ public class ProjectTaskService {
 		return task;		
 	}
 	
-	public ProjectTask updateByProjectSequence(ProjectTask updatedTask, String backlogId) {
-		ProjectTask task =  projectTaskRepository.findByProjectSequence(updatedTask.getProjectSequence());
+	public ProjectTask updateByProjectSequence(ProjectTask updatedTask, String backlogId, String ptId) {
+		//Call this service method to validate input parms by finding the existing task.
+		ProjectTask task =  findPtByProjectSequence(backlogId, ptId);
 		task = updatedTask;
 		return projectTaskRepository.save(task);
-		
-		
+	}
+	
+	public void deletePtByProjectSequence(String backlogId, String ptId) {
+		ProjectTask task =  findPtByProjectSequence(backlogId, ptId);
+		projectTaskRepository.delete(task);
 	}
 		
-	// replace it with update task
-	
-	// save/update
+
 }

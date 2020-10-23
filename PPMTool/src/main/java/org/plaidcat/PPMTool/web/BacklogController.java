@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,8 +40,8 @@ public class BacklogController {
 	 * @param backlog_id - the ProjectIdentifier of the backlog we're adding the task to
 	 * @return Either errors, or value of the created task
 	 */
-	@PostMapping("/{backlog_id}")
-	public ResponseEntity<?> addProjectTaskToBackLog(@RequestBody ProjectTask task, BindingResult result, @PathVariable String backlog_id ) {
+	@PostMapping("/{backlogId}")
+	public ResponseEntity<?> addProjectTaskToBackLog(@RequestBody ProjectTask task, BindingResult result, @PathVariable String backlogId ) {
 		
 		if (!ValidationUtil.isValid(result, task, Default.class, SecondaryValidation.class)) {
 			ResponseEntity<?> errorMap = errorService.validationError(result);
@@ -49,38 +50,38 @@ public class BacklogController {
 			}
 		}
 		
-		ProjectTask newTask = ptService.addProjectTask(backlog_id, task);
+		ProjectTask newTask = ptService.addProjectTask(backlogId, task);
 		
-		return new ResponseEntity<ProjectTask>(newTask, HttpStatus.CREATED);
+		return new ResponseEntity<>(newTask, HttpStatus.CREATED);
 	}
 	
 	/**
 	 * Retrieves the list of tasks belonging to the backlog
-	 * @param backlog_id - The projectIdentifier of the project we're retrieving tasks for
+	 * @param backlogId - The projectIdentifier of the project we're retrieving tasks for
 	 * @return - A list of ProjectTask objects
 	 */
-	@GetMapping("/{backlog_id}")
-	public Iterable<ProjectTask> getProjectBacklog(@PathVariable String backlog_id) {
+	@GetMapping("/{backlogId}")
+	public Iterable<ProjectTask> getProjectBacklog(@PathVariable String backlogId) {
 		
-		return ptService.findBacklogById(backlog_id);
+		return ptService.findBacklogById(backlogId);
 	}
 
 	/**
 	 * Retrieves a single task from the backlog using the project identifier and task sequence
-	 * @param backlog_id - The projectIdentifier for this backlog
+	 * @param backlogId - The projectIdentifier for this backlog
 	 * @param sequence - The sequence within the project of the task we are looking for
 	 * @return
 	 */
-	@GetMapping("/{backlog_id}/{sequence}")
-	public ResponseEntity<?> getProjectTask(@PathVariable String backlog_id, @PathVariable String sequence) {
+	@GetMapping("/{backlogId}/{sequence}")
+	public ResponseEntity<?> getProjectTask(@PathVariable String backlogId, @PathVariable String sequence) {
 		
-		ProjectTask task = ptService.findPtByProjectSequence(backlog_id, sequence);
-		return new ResponseEntity<ProjectTask>(task, HttpStatus.OK);
+		ProjectTask task = ptService.findPtByProjectSequence(backlogId, sequence);
+		return new ResponseEntity<>(task, HttpStatus.OK);
 	}
 	
-	@PatchMapping("/{backlog_id}/{pt_id}")
+	@PatchMapping("/{backlogId}/{ptId}")
 	public ResponseEntity<?> updateProjectTask(@Valid @RequestBody ProjectTask projectTask, BindingResult result, 
-			@PathVariable String backlog_id, @PathVariable String pt_id) {
+			@PathVariable String backlogId, @PathVariable String ptId) {
 		
 		if (!ValidationUtil.isValid(result, projectTask, Default.class, SecondaryValidation.class)) {
 			ResponseEntity<?> errorMap = errorService.validationError(result);
@@ -89,9 +90,17 @@ public class BacklogController {
 			}
 		}
 		
-		ProjectTask updatedTask = ptService.updateByProjectSequence(projectTask, backlog_id);
+		ProjectTask updatedTask = ptService.updateByProjectSequence(projectTask, backlogId, ptId);
+				
+		return new ResponseEntity<>(updatedTask, HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/{backlogId}/{ptId}")
+	public ResponseEntity<?> deleteProjectTask(@PathVariable String backlogId, @PathVariable String ptId) {
+		ptService.deletePtByProjectSequence(backlogId, ptId);
 		
 		
-		return new ResponseEntity<ProjectTask>(updatedTask, HttpStatus.OK);
+		
+		return new ResponseEntity<String>("Project Task " + ptId + " was successfully deleted", HttpStatus.OK);
 	}
 }

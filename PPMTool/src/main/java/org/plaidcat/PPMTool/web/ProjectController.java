@@ -1,7 +1,5 @@
 package org.plaidcat.PPMTool.web;
 
-
-
 import javax.validation.groups.Default;
 
 import org.plaidcat.PPMTool.SecondaryValidation;
@@ -51,7 +49,7 @@ public class ProjectController {
 		}
 		
 		projectService.saveOrUpdateProject(project);
-		return new ResponseEntity<Project>(project, HttpStatus.CREATED);
+		return new ResponseEntity<>(project, HttpStatus.CREATED);
 	}
 	
 	/**
@@ -64,7 +62,7 @@ public class ProjectController {
 
 		Project project = projectService.findProjectByIdentifier(projectId);
 		
-		return new ResponseEntity<Project>(project, HttpStatus.OK);
+		return new ResponseEntity<>(project, HttpStatus.OK);
 	}
 	
 	/**
@@ -86,6 +84,6 @@ public class ProjectController {
 		
 		projectService.deleteProjectById(projectId.toUpperCase());
 		
-		return new ResponseEntity<String>("Project '" + projectId + "' has been deleted", HttpStatus.OK);
+		return new ResponseEntity<>("Project '" + projectId + "' has been deleted", HttpStatus.OK);
 	}
 }
