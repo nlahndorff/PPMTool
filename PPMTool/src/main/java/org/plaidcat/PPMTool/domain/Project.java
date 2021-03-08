@@ -64,7 +64,7 @@ public class Project {
 	private Backlog backlog;
 
 	public Project() {
-		
+		//Empty constructor for JPA
 	}
 	
 	@PrePersist

@@ -2,7 +2,6 @@ package org.plaidcat.PPMTool.domain;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,7 +26,7 @@ public class ProjectTask {
 	@Column(updatable=false, unique=true)
 	private String projectSequence;
 	
-	@NotBlank(message="Please include a taks summary")
+	@NotBlank(message="Please include a task summary")
 	private String summary;
 	
 	private String acceptanceCriteria;
@@ -60,7 +59,7 @@ public class ProjectTask {
 	
 	
 	public ProjectTask() {
-		
+		//Empty constructor for JPA
 	}
 
 	public Long getId() {

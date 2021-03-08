@@ -1,9 +1,11 @@
 package org.plaidcat.PPMTool.services;
 
 import org.plaidcat.PPMTool.domain.Backlog;
+import org.plaidcat.PPMTool.domain.Project;
 import org.plaidcat.PPMTool.domain.ProjectTask;
 import org.plaidcat.PPMTool.exception.ProjectNotFoundException;
 import org.plaidcat.PPMTool.repositories.BacklogRepository;
+import org.plaidcat.PPMTool.repositories.ProjectRepository;
 import org.plaidcat.PPMTool.repositories.ProjectTaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,6 +16,9 @@ import com.google.common.collect.Iterables;
 @Service
 public class ProjectTaskService {
 
+    @Autowired
+    private ProjectRepository projectRepository;
+    
 	@Autowired
 	BacklogRepository backlogRepository;
 	
@@ -53,11 +58,11 @@ public class ProjectTaskService {
 
 	
 	public Iterable<ProjectTask> findBacklogById(String id) {
-		Iterable<ProjectTask> pt = projectTaskRepository.findByProjectIdentifierOrderByPriority(id); 
-		if (pt == null || Iterables.size(pt) == 0) {
+		Project p = projectRepository.findByProjectIdentifier(id); 
+		if (p == null) {
 			throw new ProjectNotFoundException(id);
 		}
-		return pt;
+		return projectTaskRepository.findByProjectIdentifierOrderByPriority(id);
 	}
 	
 	public ProjectTask findPtByProjectSequence(String backlogId, String sequence) {	
@@ -72,7 +77,7 @@ public class ProjectTaskService {
 			throw new ProjectNotFoundException(sequence);
 		}
 		
-		//Could also compare proj id from both objs
+		//Could also compare project id from both objects
 		if (!task.getProjectSequence().contains(backlog.getProjectIdentifier())) {
 			throw new ProjectNotFoundException(sequence);
 		}
@@ -82,9 +87,9 @@ public class ProjectTaskService {
 	
 	public ProjectTask updateByProjectSequence(ProjectTask updatedTask, String backlogId, String ptId) {
 		//Call this service method to validate input parms by finding the existing task.
-		ProjectTask task =  findPtByProjectSequence(backlogId, ptId);
-		task = updatedTask;
-		return projectTaskRepository.save(task);
+		ProjectTask task =  findPtByProjectSequence(backlogId, ptId);		
+		updatedTask.setBacklog(task.getBacklog());
+		return projectTaskRepository.save(updatedTask);
 	}
 	
 	public void deletePtByProjectSequence(String backlogId, String ptId) {

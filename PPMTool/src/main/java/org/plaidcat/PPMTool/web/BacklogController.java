@@ -101,6 +101,6 @@ public class BacklogController {
 		
 		
 		
-		return new ResponseEntity<String>("Project Task " + ptId + " was successfully deleted", HttpStatus.OK);
+		return new ResponseEntity<>("Project Task " + ptId + " was successfully deleted", HttpStatus.OK);
 	}
 }
