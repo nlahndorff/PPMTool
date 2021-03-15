@@ -55,7 +55,18 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!--  Required for validation to work in Spring Boot 2.3.0+  -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>29.0-jre</version>
+		</dependency>		
 	</dependencies>
+
 
 	<build>
 		<plugins>
