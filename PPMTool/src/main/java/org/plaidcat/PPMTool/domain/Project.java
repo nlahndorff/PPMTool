@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -47,34 +48,40 @@ public class Project {
 	private String description;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
-	private Date start_date;
+	private Date startDate;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
-	private Date end_date;
+	private Date endDate;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	@Column(updatable = false)
-	private Date created_at;
+	private Date createdAt;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
-	private Date updated_at;
+	private Date updatedAt;
 	
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "project")
 	@JsonIgnore
 	private Backlog backlog;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonIgnore
+	private User user;
 
+	private String projectLeader;
+	
 	public Project() {
 		//Empty constructor for JPA
 	}
 	
 	@PrePersist
 	protected void onCreate() {
-		created_at = new Date();
+		createdAt = new Date();
 	}
 	
 	@PreUpdate
 	protected void onUpdate() {
-		updated_at = new Date();
+		updatedAt = new Date();
 	}
 
 	public Long getId() {
@@ -109,36 +116,36 @@ public class Project {
 		this.description = description;
 	}
 
-	public Date getStart_date() {
-		return start_date;
+	public Date getStartDate() {
+		return startDate;
 	}
 
-	public void setStart_date(Date start_date) {
-		this.start_date = start_date;
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
 	}
 
-	public Date getEnd_date() {
-		return end_date;
+	public Date getEndDate() {
+		return endDate;
 	}
 
-	public void setEnd_date(Date end_date) {
-		this.end_date = end_date;
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 
-	public Date getCreated_at() {
-		return created_at;
+	public Date getCreatedAt() {
+		return createdAt;
 	}
 
-	public void setCreated_at(Date created_at) {
-		this.created_at = created_at;
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
 	}
 
-	public Date getUpdated_at() {
-		return updated_at;
+	public Date getUpdatedAt() {
+		return updatedAt;
 	}
 
-	public void setUpdated_at(Date updated_at) {
-		this.updated_at = updated_at;
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 
 	public Backlog getBacklog() {
@@ -147,5 +154,21 @@ public class Project {
 
 	public void setBacklog(Backlog backlog) {
 		this.backlog = backlog;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public String getProjectLeader() {
+		return projectLeader;
+	}
+
+	public void setProjectLeader(String projectLeader) {
+		this.projectLeader = projectLeader;
 	}
 }

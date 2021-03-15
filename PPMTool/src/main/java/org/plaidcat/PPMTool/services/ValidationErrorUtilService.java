@@ -14,13 +14,13 @@ public class ValidationErrorUtilService {
 
 	public ResponseEntity<?> validationError(BindingResult result) {
         if(result.hasErrors()) {
-        	Map<String,String> errors = new HashMap<String,String>();
+        	Map<String,String> errors = new HashMap<>();
         	
         	for (FieldError e: result.getFieldErrors()) {
         		errors.put(e.getField(), e.getDefaultMessage());
         	}
         	
-            return new ResponseEntity<Map<String,String>>(errors, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
         
         return null;
