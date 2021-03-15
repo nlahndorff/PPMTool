@@ -4,6 +4,7 @@ import org.plaidcat.PPMTool.domain.Backlog;
 import org.plaidcat.PPMTool.domain.Project;
 import org.plaidcat.PPMTool.domain.ProjectTask;
 import org.plaidcat.PPMTool.exception.ProjectNotFoundException;
+import org.plaidcat.PPMTool.exception.ProjectTaskNotFoundException;
 import org.plaidcat.PPMTool.repositories.BacklogRepository;
 import org.plaidcat.PPMTool.repositories.ProjectRepository;
 import org.plaidcat.PPMTool.repositories.ProjectTaskRepository;
@@ -11,23 +12,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
-import com.google.common.collect.Iterables;
 
 @Service
 public class ProjectTaskService {
-
-    @Autowired
-    private ProjectRepository projectRepository;
-    
-	@Autowired
-	BacklogRepository backlogRepository;
-	
+   
 	@Autowired
 	private ProjectTaskRepository projectTaskRepository;
 	
-	public ProjectTask addProjectTask(String projectIdentifier, ProjectTask task) {
+	@Autowired
+	private ProjectService projectService;
+	
+	public ProjectTask addProjectTask(String projectIdentifier, ProjectTask task, String username) {
 		
-		Backlog backlog = backlogRepository.findByProjectIdentifier(projectIdentifier);
+		//projectService.findProjectByIdentifier handles validity and owner validation.
+		Backlog backlog = projectService.findProjectByIdentifier(projectIdentifier, username).getBacklog();
 		
 		if (backlog == null) {
 			throw new ProjectNotFoundException(projectIdentifier);
@@ -57,43 +55,40 @@ public class ProjectTaskService {
 	}
 
 	
-	public Iterable<ProjectTask> findBacklogById(String id) {
-		Project p = projectRepository.findByProjectIdentifier(id); 
-		if (p == null) {
-			throw new ProjectNotFoundException(id);
-		}
+	public Iterable<ProjectTask> findBacklogById(String id, String username) {
+
+		//Perform validations
+		projectService.findProjectByIdentifier(id, username);
+		
 		return projectTaskRepository.findByProjectIdentifierOrderByPriority(id);
 	}
 	
-	public ProjectTask findPtByProjectSequence(String backlogId, String sequence) {	
-		Backlog backlog = backlogRepository.findByProjectIdentifier(backlogId);
-		if (backlog == null) { 
-			throw new ProjectNotFoundException(backlogId);
-		}
+	public ProjectTask findPtByProjectSequence(String backlogId, String sequence, String username) {
+		
+		//Perform validations
+		projectService.findProjectByIdentifier(backlogId, username);
 		
 		ProjectTask task =  projectTaskRepository.findByProjectSequence(sequence);
 		if (task == null) {
-			//TODO:  Add new exception for task not found
-			throw new ProjectNotFoundException(sequence);
+			throw new ProjectTaskNotFoundException(sequence);
 		}
 		
 		//Could also compare project id from both objects
-		if (!task.getProjectSequence().contains(backlog.getProjectIdentifier())) {
+		if (!task.getProjectSequence().contains(backlogId)) {
 			throw new ProjectNotFoundException(sequence);
-		}
-		
+		}		
 		return task;		
 	}
 	
-	public ProjectTask updateByProjectSequence(ProjectTask updatedTask, String backlogId, String ptId) {
+	public ProjectTask updateByProjectSequence(ProjectTask updatedTask, String backlogId, String ptId, String username) {
 		//Call this service method to validate input parms by finding the existing task.
-		ProjectTask task =  findPtByProjectSequence(backlogId, ptId);		
+		ProjectTask task =  findPtByProjectSequence(backlogId, ptId, username);		
 		updatedTask.setBacklog(task.getBacklog());
 		return projectTaskRepository.save(updatedTask);
 	}
 	
-	public void deletePtByProjectSequence(String backlogId, String ptId) {
-		ProjectTask task =  findPtByProjectSequence(backlogId, ptId);
+	public void deletePtByProjectSequence(String backlogId, String ptId, String username) {
+		ProjectTask task =  findPtByProjectSequence(backlogId, ptId, username);
 		projectTaskRepository.delete(task);
 	}
 		

@@ -1,4 +1,4 @@
-package org.plaidcat.PPMTool.exception;
+package org.plaidcat.PPMTool.exception.response;
 
 public class ProjectIdExceptionResponse  {
 	private String projectIdentifier;

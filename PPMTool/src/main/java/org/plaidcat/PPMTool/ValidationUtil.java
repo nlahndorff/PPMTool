@@ -20,6 +20,10 @@ import org.springframework.validation.Errors;
  */
 public class ValidationUtil {
 
+	private ValidationUtil() {
+		//Everything is static, no need to instantiate this class.
+	}
+	
 	/**
 	 * Test validity of an object against some number of validation groups, or
 	 * Default if no groups are specified.
@@ -61,6 +65,6 @@ public class ValidationUtil {
 	            result.rejectValue( propertyName, constraintName, v.getMessage() );
 	        }
 	    }
-	    return violations.size() == 0;
+	    return violations.isEmpty();
 	}
 }
