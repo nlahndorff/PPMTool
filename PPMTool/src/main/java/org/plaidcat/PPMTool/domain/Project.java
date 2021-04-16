@@ -48,9 +48,11 @@ public class Project {
 	private String description;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
+	@Column(name = "start_date" )
 	private Date startDate;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
+	@Column(name = "end_date")
 	private Date endDate;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")

@@ -2,15 +2,40 @@ import React from "react";
 import "./App.css";
 import Dashboard from "./components/Dashboard";
 import Header from "./components/Layout/Header";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AddProject from "./components/Project/AddProject";
 import UpdateProject from "./components/Project/UpdateProject";
-import ProjectBoard from "./components/ProjectBoard/ProjectBoard"
+import ProjectBoard from "./components/ProjectBoard/ProjectBoard";
 import { Provider } from "react-redux";
 import store from "./store";
 import AddProjectTask from "./components/ProjectBoard/ProjectTask/AddProjectTask";
 import UpdateProjectTask from "./components/ProjectBoard/ProjectTask/UpdateProjectTask";
+import Landing from "./components/Layout/Landing";
+import Register from "./components/UserManagement/Register";
+import Login from "./components/UserManagement/Login";
+import jwt_decode from "jwt-decode";
+import setJwtToken from "./SecurityUtils/setJwtToken";
+import { SET_CURRENT_USER } from "./actions/types";
+import { logout } from "./actions/securityActions";
+import SecuredRoute from "./SecurityUtils/SecuredRoute";
+
+const jwtToken = localStorage.jwtToken;
+
+if (jwtToken) {
+  setJwtToken(jwtToken);
+  const decodedJtw = jwt_decode(jwtToken);
+  store.dispatch({
+    type: SET_CURRENT_USER,
+    payload: decodedJtw,
+  });
+
+  const currentTime = Date.now() / 1000;
+  if (decodedJtw.exp < currentTime) {
+    store.dispatch(logout());
+    window.location.href = "/";
+  }
+}
 
 function App() {
   return (
@@ -18,12 +43,40 @@ function App() {
       <Router>
         <div className="App">
           <Header />
-          <Route exact path="/dashboard" component={Dashboard} />
-          <Route exact path="/addProject" component={AddProject} />
-          <Route exact path="/updateProject/:id" component={UpdateProject} />
-          <Route exact path="/projectBoard/:id" component={ProjectBoard} />
-          <Route exact path="/addProjectTask/:id" component={AddProjectTask} />
-          <Route exact path="/updateProjectTask/:backlog_id/:pt_id" component={UpdateProjectTask} />
+          {
+            //public routes
+          }
+          <Route exact path="/" component={Landing} />
+          <Route exact path="/register" component={Register} />
+          <Route exact path="/login" component={Login} />
+
+          {
+            // Private Routes
+          }
+          <Switch>
+            <SecuredRoute exact path="/dashboard" component={Dashboard} />
+            <SecuredRoute exact path="/addProject" component={AddProject} />
+            <SecuredRoute
+              exact
+              path="/updateProject/:id"
+              component={UpdateProject}
+            />
+            <SecuredRoute
+              exact
+              path="/projectBoard/:id"
+              component={ProjectBoard}
+            />
+            <SecuredRoute
+              exact
+              path="/addProjectTask/:id"
+              component={AddProjectTask}
+            />
+            <SecuredRoute
+              exact
+              path="/updateProjectTask/:backlog_id/:pt_id"
+              component={UpdateProjectTask}
+            />
+          </Switch>
         </div>
       </Router>
     </Provider>

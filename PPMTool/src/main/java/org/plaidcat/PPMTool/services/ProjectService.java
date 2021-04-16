@@ -49,6 +49,10 @@ public class ProjectService {
 				
 				//ensure the backlog is set for the project
 				project.setBacklog(backlogRepository.findByProjectIdentifier(project.getProjectIdentifier()));
+
+				//Should this be set on the project when its sent from the UI?  Added to keep orjects forom disappearing, but
+				// feels like a hack.
+				project.setProjectLeader(username);
 			} else {			
 				User user = userRepository.findByUsername(username);
 			 						

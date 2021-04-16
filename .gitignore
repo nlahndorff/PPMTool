@@ -21,3 +21,4 @@ target/
 /.project
 /.settings
 /target
+/.sonarlint
