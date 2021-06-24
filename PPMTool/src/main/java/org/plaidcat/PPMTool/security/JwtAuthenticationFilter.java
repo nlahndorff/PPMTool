@@ -11,7 +11,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.plaidcat.PPMTool.domain.User;
 import org.plaidcat.PPMTool.services.CustomUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -44,9 +43,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			
 			if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
 				Long userid = tokenProvider.getUserIdFromJWT(jwt);
-				User userDetails = detailService.loadUserById(userid);
+				var userDetails = detailService.loadUserById(userid);
 				
-				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, Collections.emptyList());
+				var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, Collections.emptyList());
 				
 				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(authentication);

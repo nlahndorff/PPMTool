@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.plaidcat.PPMTool.domain.Backlog;
 import org.plaidcat.PPMTool.domain.Project;
-import org.plaidcat.PPMTool.domain.User;
 import org.plaidcat.PPMTool.exception.ProjectIdException;
 import org.plaidcat.PPMTool.exception.ProjectNotFoundException;
 import org.plaidcat.PPMTool.repositories.BacklogRepository;
@@ -54,9 +53,9 @@ public class ProjectService {
 				// feels like a hack.
 				project.setProjectLeader(username);
 			} else {			
-				User user = userRepository.findByUsername(username);
+				var user = userRepository.findByUsername(username);
 			 						
-				Backlog backlog = new Backlog();
+				var backlog = new Backlog();
 				project.setBacklog(backlog);
 				backlog.setProject(project);
 				backlog.setProjectIdentifier(project.getProjectIdentifier());
@@ -73,7 +72,7 @@ public class ProjectService {
 	}
 	
 	public Project findProjectByIdentifier(String projectId, String username) {
-		Project proj = projectRepository.findByProjectIdentifier(projectId.toUpperCase());
+		var proj = projectRepository.findByProjectIdentifier(projectId.toUpperCase());
 		
 		if (proj == null || !proj.getProjectLeader().equalsIgnoreCase(username)) {
 			throw new ProjectNotFoundException(projectId);

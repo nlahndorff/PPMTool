@@ -18,25 +18,25 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 
 	@ExceptionHandler
 	public final ResponseEntity<Object> handleProjectIdException(ProjectIdException ex, WebRequest request) {
-		ProjectIdExceptionResponse exceptionResponse = new ProjectIdExceptionResponse(ex.getMessage());
+		var exceptionResponse = new ProjectIdExceptionResponse(ex.getMessage());
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler
 	public final ResponseEntity<Object> handleProjectNotFoundException(ProjectNotFoundException e, WebRequest request) {
-		ProjectIdExceptionResponse exceptionResponse = new ProjectIdExceptionResponse(e.getMessage());
+		var exceptionResponse = new ProjectIdExceptionResponse(e.getMessage());
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler
 	public final ResponseEntity<Object> handleProjectTaskNotFoundException(ProjectTaskNotFoundException e, WebRequest request) {
-		ProjectTaskExceptionResponse exceptionResponse = new ProjectTaskExceptionResponse(e.getMessage());
+		var exceptionResponse = new ProjectTaskExceptionResponse(e.getMessage());
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler
 	public final ResponseEntity<Object> handleUsernameExistsException(UsernameExistsException e, WebRequest request) {
-		UsernameAlreadyExistsResponse exceptionResponse = new UsernameAlreadyExistsResponse(e.getMessage());
+		var exceptionResponse = new UsernameAlreadyExistsResponse(e.getMessage());
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
 }

@@ -54,7 +54,7 @@ public class BacklogController {
 			}
 		}
 		
-		ProjectTask newTask = ptService.addProjectTask(backlogId, task, principal.getName());
+		var newTask = ptService.addProjectTask(backlogId, task, principal.getName());
 		
 		return new ResponseEntity<>(newTask, HttpStatus.CREATED);
 	}

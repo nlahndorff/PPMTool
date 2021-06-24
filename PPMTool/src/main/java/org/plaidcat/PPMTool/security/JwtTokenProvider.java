@@ -9,7 +9,6 @@ import org.plaidcat.PPMTool.domain.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -26,11 +25,11 @@ public class JwtTokenProvider {
 	
 	//generate a token
 	public String generateToken(Authentication auth) {
-		User user = (User)auth.getPrincipal();
-		Date now = new Date(System.currentTimeMillis());
-		Date expireDate = new Date(now.getTime() + EXPIRATION_TIME);
+		var user = (User)auth.getPrincipal();
+		var now = new Date(System.currentTimeMillis());
+		var expireDate = new Date(now.getTime() + EXPIRATION_TIME);
 		
-		String userId = Long.toString(user.getId());
+		var userId = Long.toString(user.getId());
 		
 		Map<String,Object> claims = new HashMap<>();
 		claims.put("id", Long.toString(user.getId()));
@@ -67,7 +66,7 @@ public class JwtTokenProvider {
 	
 	//get user id from token
 	public Long getUserIdFromJWT(String token) {		
-		Claims claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
+		var claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
 		return Long.parseLong((String)claims.get("id"));		
 	}
 

@@ -6,10 +6,8 @@ package org.plaidcat.PPMTool;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Path;
 import javax.validation.Path.Node;
 import javax.validation.Validation;
-import javax.validation.Validator;
 import javax.validation.groups.Default;
 
 import org.springframework.validation.Errors;
@@ -41,28 +39,25 @@ public class ValidationUtil {
 	    {
 	        classes = new Class<?>[] { Default.class };
 	    }
-	    Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+	    var validator = Validation.buildDefaultValidatorFactory().getValidator();
 	    Set<ConstraintViolation<Object>> violations = validator.validate( o, classes );
 	    for ( ConstraintViolation<Object> v : violations )
 	    {
-	        Path path = v.getPropertyPath();
-	        String propertyName = "";
+	        var path = v.getPropertyPath();
+	        var propertyName = new StringBuilder();
 	        if ( path != null )
 	        {
 	            for ( Node n : path )
 	            {
-	                propertyName += n.getName() + ".";
+	                propertyName.append(n.getName()).append(".");
 	            }
-	            propertyName = propertyName.substring( 0, propertyName.length()-1 );
+	            propertyName = propertyName.deleteCharAt(propertyName.length()); 	            		
 	        }
-	        String constraintName = v.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName();
-	        if ( propertyName == null || "".equals(  propertyName  ))
-	        {
+	        var constraintName = v.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName();
+	        if ( propertyName == null || "".equals(  propertyName.toString()  )) {
 	            result.reject( constraintName, v.getMessage());
-	        }
-	        else
-	        {
-	            result.rejectValue( propertyName, constraintName, v.getMessage() );
+	        } else {
+	            result.rejectValue( propertyName.toString(), constraintName, v.getMessage() );
 	        }
 	    }
 	    return violations.isEmpty();

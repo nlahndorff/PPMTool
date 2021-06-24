@@ -1,12 +1,8 @@
 package org.plaidcat.PPMTool.services;
 
-import org.plaidcat.PPMTool.domain.Backlog;
-import org.plaidcat.PPMTool.domain.Project;
 import org.plaidcat.PPMTool.domain.ProjectTask;
 import org.plaidcat.PPMTool.exception.ProjectNotFoundException;
 import org.plaidcat.PPMTool.exception.ProjectTaskNotFoundException;
-import org.plaidcat.PPMTool.repositories.BacklogRepository;
-import org.plaidcat.PPMTool.repositories.ProjectRepository;
 import org.plaidcat.PPMTool.repositories.ProjectTaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,7 +21,7 @@ public class ProjectTaskService {
 	public ProjectTask addProjectTask(String projectIdentifier, ProjectTask task, String username) {
 		
 		//projectService.findProjectByIdentifier handles validity and owner validation.
-		Backlog backlog = projectService.findProjectByIdentifier(projectIdentifier, username).getBacklog();
+		var backlog = projectService.findProjectByIdentifier(projectIdentifier, username).getBacklog();
 		
 		if (backlog == null) {
 			throw new ProjectNotFoundException(projectIdentifier);
@@ -68,7 +64,7 @@ public class ProjectTaskService {
 		//Perform validations
 		projectService.findProjectByIdentifier(backlogId, username);
 		
-		ProjectTask task =  projectTaskRepository.findByProjectSequence(sequence);
+		var task =  projectTaskRepository.findByProjectSequence(sequence);
 		if (task == null) {
 			throw new ProjectTaskNotFoundException(sequence);
 		}
